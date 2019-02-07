@@ -4,52 +4,129 @@
     <style>
 
     .gridContainer{
-        display: inline-block;
+        display: flex;
+        flex-wrap: wrap;
         width: 800px;
-        height: 796px;
-        border: solid black;
-        padding-top: 4px;
-    }
+        height: 800px;
+        outline: solid black;
+        margin: 0;
+        padding: 0;
 
-    .gridBox{
-        display: inline-grid;
-        height: 50px;
-        width: 50px;
-        margin-top: -4px;
-        size: fixed;
     }
 
     </style>
 </head>
+
 <body>
   <h1>
     ETCH-A-SKETCH
   </h1>
 
+
+    <button id="clearButton">Clear Grid</button>
+    <button id='rainbowButton'>Rainbow Brush!</button>
+    <button id="sizeButton">Change Grid Size</button>
+    <div id="rainbowToggle"></div>
+    <br>
+    <br>
     <div class="gridContainer"></div>
 
 
 
     <script>
 
+        let brushColor = "black";
         const gridContainer = document.querySelector('.gridContainer');
-        const gridBox = document.createElement('div');
-        const allBoxes = gridContainer.querySelectorAll('div');
+        changeGridLength();
+        drawGrid();
 
-            for(let i = 1; i < 257; i++){
-                const gridBox = document.createElement('div');
-                gridBox.setAttribute('id', i);
-                gridBox.setAttribute('class', 'gridBox');
-                gridBox.addEventListener('mouseover', (e) => {
-                gridBox.style.backgroundColor = 'lightblue';
-                });
-                gridContainer.appendChild(gridBox);
-                console.log(gridBox);
+        const clear = document.querySelector('#clearButton');
+        clear.addEventListener('click', clearGrid);
 
+        const rainbow = document.querySelector('#rainbowButton');
+        rainbow.addEventListener('click', changeColor);
+
+        const size = document.querySelector('#sizeButton');
+        size.addEventListener('click', resizeGrid);
+
+        function drawGrid(){
+            let boxesCreated = gridLength**2;
+            let boxSize = (800 / gridLength);
+
+            console.log("The length of the grid is: " + gridLength + " boxes.");
+            console.log("The number of boxes created is: " + boxesCreated + " boxes.");
+            console.log("The size of each box in the grid is: " + boxSize + " pixels.");
+            
+            if(typeof gridLength == 'number' && gridLength < 65 && gridLength > 0){
+                for(let i = 1; i <= boxesCreated; i++){
+                    const gridbox = document.createElement('div');
+                    gridbox.setAttribute('id', i);
+                    gridbox.style.width = boxSize + "px";
+                    gridbox.style.height = boxSize + "px";
+            
+                    if(brushColor == "black"){
+                        gridbox.addEventListener('mouseover', (e) => {
+                        gridbox.style.backgroundColor = "black";
+                        });
+                    } else {
+                        gridbox.addEventListener('mouseover', (e) => {
+                        gridbox.style.backgroundColor = rgbGen();
+                        });
+                    }
+                    gridContainer.appendChild(gridbox);
+                    console.log(gridbox);
+
+                }
+            } else {
+                alert("You did not enter a number or a number that fit the parameters (a Max of 64). Please enter another number.");
+            }
+
+        }
+
+        function clearGrid(){
+            deleteGridboxes();
+            drawGrid();
+        }
+
+        function changeColor(){
+            deleteGridboxes();
+            toggleRainbow();
+            drawGrid();
+        }
+
+        function resizeGrid(){
+            changeGridLength();
+            deleteGridboxes();
+            drawGrid();
+        }
+
+        function toggleRainbow(){
+            if (brushColor == "black"){
+                return brushColor = 'rainbow';
+
+            } else {
+                return brushColor = "black";
+            }
+        }
+
+        function deleteGridboxes(){
+            while(gridContainer.hasChildNodes()){
+                gridContainer.removeChild(gridContainer.firstChild);
+            }
+        }
+
+        function changeGridLength(){
+            return gridLength = Number(prompt('how many squares per side? (Max 64)'));
+        }
+
+
+        function rgbGen() {
+                let r = Math.floor(Math.random() * 256);
+                let g = Math.floor(Math.random() * 256);
+                let b = Math.floor(Math.random() * 256);
+                return color = "rgb(" + r + "," + g + "," + b + ")";
             }
         
-
-
     </script>
 
 </body>
